@@ -4,76 +4,68 @@
 #include "Items/Item.h"
 #include "Slash/DebugMacros.h"
 
-AItem::AItem()
+AItem::AItem() : Amplitude(0.25f)
 {
 	PrimaryActorTick.bCanEverTick = true;
+	
+	// Amplitude = 0.25f;
 
+	/** template Function */
+	Avg<int32>(1, 3);
+	Avg<float>(3.45f, 7.86f);
+
+	/** Component */
+	ItemMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ItemMeshComponent"));
+	RootComponent = ItemMesh;
 }
 
 void AItem::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	/** 로그
-	* UE_LOG(LogTemp, Warning, TEXT("BeginPlay"));
-	*/
+	// SetActorLocation(FVector(0.f, 0.f, 50.f));
+	// SetActorRotation(FRotator(0.f, 45.f, 0.f));
 
-	/** 스크린 로그
-	* if (GEngine)
-	* {
-	* 	GEngine->AddOnScreenDebugMessage(1, 60.f, FColor::Cyan, TEXT("GEngine Msg"));
-	* }
-	*/
-	
+	// UWorld* World = GetWorld();
+	// FVector Location = GetActorLocation();
+	// FVector Forward = GetActorForwardVector();
 
-	/** 드로우 디버그 */
-	UWorld* World = GetWorld();
-	FVector Location = GetActorLocation();
-	FVector Forward = GetActorForwardVector();
-	/** 드로우 스피어
-	* if (World)
-	* {
-	* 	DrawDebugSphere(World, Location, 25.f, 24, FColor::Red, false, 30.f); // Sphere
-	* }
-	*/
+	///** 드로우 디버그 */
+	// DRAW_SPHERE(GetActorLocation());
+	// DRAW_VECTOR(Location, Location + Forward * 100.f);
 
-	/** 드로우 라인
-	* if(World)
-	* {
-	*   FVector Forward = GetActorForwardVector();
-	*	DrawDebugLine(World, Location, Location + Forward * 100.f, FColor::Red, ture, -1.f, 0, 1.f);
-	* }
-	*/
-
-	/** 드로우 포인트
-	* if(World)
-	* {
-	*	DrawDebugPoint(World, Location + Forward * 100.f, 15.f, FColor::Red, ture);
-	* }
-	*/
-
-	DRAW_SPHERE(GetActorLocation());
-	// DRAW_LINE(Location, Location + Forward * 100.f);
-	// DRAW_POINT(Location + Forward * 100.f);
-	DRAW_VECTOR(Location, Location + Forward * 100.f);
 }
 
 void AItem::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	/** 로그
-	* UE_LOG(LogTemp, Warning, TEXT("DeltaTime: %f"), DeltaTime);
-	*/
-	
-	/** 스크린 로그
-	* if (GEngine)
-	* {
-	* 	FString Name = GetName();
-	* 	FString Message = FString::Printf(TEXT("DeltaTime: %f"), DeltaTime);
-	* 	GEngine->AddOnScreenDebugMessage(1, 60.f, FColor::Cyan, Name+Message);
-	* }
-	*/
-	
+	//movement rate in units of cm/s
+	float MovementRate = 50.f;
+	float RotationRate = 45.f;
+	/** MovementRate* DeltaTime = > (cm / s) * (s / frame) = (cm / frame) */
+	// AddActorWorldOffset(FVector(MovementRate * DeltaTime, 0.f, 0.f));
+	// AddActorWorldRotation(FRotator(0.f, RotationRate * DeltaTime, 0.f));
+
+	/** 사인함수 */
+	RunningTime += DeltaTime;
+	float DeltaZ = TransformedSin(RunningTime);
+	AddActorWorldOffset(FVector(0.f, 0.f, DeltaZ));
+
+	DRAW_SPHERE_SINGLEFRAME(GetActorLocation());
+	DRAW_VECTOR_SINGLEFRAME(GetActorLocation(), GetActorLocation() + GetActorForwardVector() * 100.f);
+
+	FVector AvgVector = Avg<FVector>(GetActorLocation(), FVector::ZeroVector);
+	DRAW_POINT_SINGLEFRAME(AvgVector);
+	// FRotator AvgRotator = Avg<FRotator>(GetActorRotation(), FRotator::ZeroRotator); didnt provide '/' operator
 }
 
+float AItem::TransformedSin(float value)
+{
+	return  Amplitude * FMath::Sin(value * TimeConstant); // 속도, 폭
+}
+
+float AItem::TransformedCos(float value)
+{
+	return  Amplitude * FMath::Cos(value * TimeConstant); // 속도, 폭
+}
