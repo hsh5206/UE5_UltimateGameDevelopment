@@ -21,7 +21,7 @@ protected:
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sine Parameters")
-	float Amplitude;
+	float Amplitude = 0.25f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sine Parameters")
 	float TimeConstant = 5.f;
 	UFUNCTION(BlueprintPure)
