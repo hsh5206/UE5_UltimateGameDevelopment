@@ -3,6 +3,7 @@
 
 #include "Items/Item.h"
 #include "Slash/DebugMacros.h"
+#include "Components/SphereComponent.h"
 
 AItem::AItem()
 {
@@ -11,12 +12,17 @@ AItem::AItem()
 	/** Component */
 	ItemMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ItemMeshComponent"));
 	RootComponent = ItemMesh;
+
+	Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
+	Sphere->SetupAttachment(GetRootComponent());
 }
 
 void AItem::BeginPlay()
 {
 	Super::BeginPlay();
 
+	Sphere->OnComponentBeginOverlap.AddDynamic(this, &AItem::OnSphereOverlap);
+	Sphere->OnComponentEndOverlap.AddDynamic(this, &AItem::OnSphereOverlapEnd);
 }
 
 void AItem::Tick(float DeltaTime)
@@ -42,4 +48,22 @@ float AItem::TransformedSin(float value)
 float AItem::TransformedCos(float value)
 {
 	return  Amplitude * FMath::Cos(value * TimeConstant); // ¼Óµµ, Æø
+}
+
+void AItem::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	const FString OtherActorName = OtherActor->GetName();
+	if(GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(1, 30.f, FColor::Red, OtherActorName);
+	}
+}
+
+void AItem::OnSphereOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	const FString OtherActorName = OtherActor->GetName();
+	if(GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(2, 30.f, FColor::Green, OtherActorName);
+	}
 }
