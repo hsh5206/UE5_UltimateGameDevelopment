@@ -4,6 +4,7 @@
 #include "Items/Item.h"
 #include "Slash/DebugMacros.h"
 #include "Components/SphereComponent.h"
+#include "Characters/SlashCharacter.h"
 
 AItem::AItem()
 {
@@ -34,9 +35,9 @@ void AItem::Tick(float DeltaTime)
 	float RotationRate = 45.f;
 
 	/** 사인함수 */
-	RunningTime += DeltaTime;
+	/*RunningTime += DeltaTime;
 	float DeltaZ = TransformedSin(RunningTime);
-	AddActorWorldOffset(FVector(0.f, 0.f, DeltaZ));
+	AddActorWorldOffset(FVector(0.f, 0.f, DeltaZ));*/
 
 }
 
@@ -52,18 +53,18 @@ float AItem::TransformedCos(float value)
 
 void AItem::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	const FString OtherActorName = OtherActor->GetName();
-	if(GEngine)
+	ASlashCharacter* SlashCharacter = Cast<ASlashCharacter>(OtherActor);
+	if (SlashCharacter)
 	{
-		GEngine->AddOnScreenDebugMessage(1, 30.f, FColor::Red, OtherActorName);
+		SlashCharacter->SetOverlappedItem(this);
 	}
 }
 
 void AItem::OnSphereOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	const FString OtherActorName = OtherActor->GetName();
-	if(GEngine)
+	ASlashCharacter* SlashCharacter = Cast<ASlashCharacter>(OtherActor);
+	if (SlashCharacter)
 	{
-		GEngine->AddOnScreenDebugMessage(2, 30.f, FColor::Green, OtherActorName);
+		SlashCharacter->SetOverlappedItem(nullptr);
 	}
 }

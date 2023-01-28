@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "CharacterTypes.h"
 #include "SlashCharacter.generated.h"
 
 class UCapsuleComponent;
@@ -29,10 +30,18 @@ private:
 	USpringArmComponent* SpringArm;
 	UPROPERTY(Visibleanywhere)
 	UCameraComponent* Camera;
+	UPROPERTY(VisibleInstanceOnly)
+	class AItem* OverlappingItem;
+	
+	ECharacterState CharacterState = ECharacterState::ECS_Unequipped;
 
 public:
 	void MoveForward(float value);
 	void MoveRight(float value);
 	void Turn(float value);
 	void LookUp(float value);
+	void EPressed();
+
+	FORCEINLINE void SetOverlappedItem(AItem* Item) { OverlappingItem = Item; }
+	FORCEINLINE ECharacterState GetCharacterState() const { return CharacterState; }
 };

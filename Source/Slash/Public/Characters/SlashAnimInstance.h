@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+#include "CharacterTypes.h"
 #include "SlashAnimInstance.generated.h"
 
 /**
@@ -26,5 +27,6 @@ public:
 	float GroundSpeed;
 	UPROPERTY(BlueprintReadOnly, Category = Movement)
 	bool bIsFalling;
-
+	UPROPERTY(BlueprintReadOnly, Category = "Movement | Character State")
+	ECharacterState CharacterState;
 };
