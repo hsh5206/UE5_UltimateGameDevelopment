@@ -35,10 +35,12 @@ void AItem::Tick(float DeltaTime)
 	float RotationRate = 45.f;
 
 	/** 사인함수 */
-	/*RunningTime += DeltaTime;
-	float DeltaZ = TransformedSin(RunningTime);
-	AddActorWorldOffset(FVector(0.f, 0.f, DeltaZ));*/
-
+	if (ItemState == EItemState::EIS_Hovering)
+	{
+		RunningTime += DeltaTime;
+		float DeltaZ = TransformedSin(RunningTime);
+		AddActorWorldOffset(FVector(0.f, 0.f, DeltaZ));
+	}
 }
 
 float AItem::TransformedSin(float value)

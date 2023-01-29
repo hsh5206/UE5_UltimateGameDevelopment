@@ -11,6 +11,7 @@ class UCapsuleComponent;
 class USkeletaMeshComponent;
 class USpringArmComponent;
 class UCameraComponent;
+class UAnimMontage;
 
 UCLASS()
 class SLASH_API ASlashCharacter : public ACharacter
@@ -25,6 +26,21 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	/** Callbacks(Input) */
+	void MoveForward(float value);
+	void MoveRight(float value);
+	void Turn(float value);
+	void LookUp(float value);
+	void EPressed();
+	void Attack();
+
+	/** Play_Montage */
+	void PlayAttackMontage();
+
+	UFUNCTION(BlueprintCallable)
+	void AttackEnd();
+	bool CanAttack();
+
 private:
 	UPROPERTY(Visibleanywhere)
 	USpringArmComponent* SpringArm;
@@ -32,16 +48,16 @@ private:
 	UCameraComponent* Camera;
 	UPROPERTY(VisibleInstanceOnly)
 	class AItem* OverlappingItem;
-	
+
 	ECharacterState CharacterState = ECharacterState::ECS_Unequipped;
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	EActionState ActionState = EActionState::EAS_Unoccupied;
 
 public:
-	void MoveForward(float value);
-	void MoveRight(float value);
-	void Turn(float value);
-	void LookUp(float value);
-	void EPressed();
-
 	FORCEINLINE void SetOverlappedItem(AItem* Item) { OverlappingItem = Item; }
 	FORCEINLINE ECharacterState GetCharacterState() const { return CharacterState; }
+
+	/** Montage */
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	UAnimMontage* AttackMontage;
 };
