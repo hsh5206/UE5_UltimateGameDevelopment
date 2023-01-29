@@ -12,6 +12,8 @@ class USkeletaMeshComponent;
 class USpringArmComponent;
 class UCameraComponent;
 class UAnimMontage;
+class AItem;
+class AWeapon;
 
 UCLASS()
 class SLASH_API ASlashCharacter : public ACharacter
@@ -36,18 +38,31 @@ protected:
 
 	/** Play_Montage */
 	void PlayAttackMontage();
+	void PlayEquipMontage(FName SectionName);
 
 	UFUNCTION(BlueprintCallable)
 	void AttackEnd();
 	bool CanAttack();
+	bool CanUnequip();
+	bool CanEquip();
+
+	UFUNCTION(BlueprintCallable)
+	void Disarm();
+	UFUNCTION(BlueprintCallable)
+	void Arm();
+	UFUNCTION(BlueprintCallable)
+	void FinishEquipping();
 
 private:
 	UPROPERTY(Visibleanywhere)
 	USpringArmComponent* SpringArm;
 	UPROPERTY(Visibleanywhere)
 	UCameraComponent* Camera;
+
 	UPROPERTY(VisibleInstanceOnly)
-	class AItem* OverlappingItem;
+	AItem* OverlappingItem;
+	UPROPERTY(VisibleAnywhere, Category = Weapon)
+	AWeapon* EquippedWeapon;
 
 	ECharacterState CharacterState = ECharacterState::ECS_Unequipped;
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
@@ -60,4 +75,6 @@ public:
 	/** Montage */
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	UAnimMontage* AttackMontage;
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	UAnimMontage* EquipMontage;
 };
