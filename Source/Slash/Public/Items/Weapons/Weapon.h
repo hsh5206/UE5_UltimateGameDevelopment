@@ -41,4 +41,5 @@ private:
 
 public:
 	FORCEINLINE UBoxComponent* GetWeaponBox() const { return WeaponBox; }
+	TArray<AActor*> IgnoreActors;
 };
