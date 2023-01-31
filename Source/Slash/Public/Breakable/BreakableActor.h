@@ -22,8 +22,15 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-private:
 	UPROPERTY(VisibleAnywhere)
 	UGeometryCollectionComponent* GeometryCollection;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	class UCapsuleComponent* Capsule;
+
+private:
+	UPROPERTY(EditAnywhere)
+	TArray<TSubclassOf <class ATreasure>> TreasureArr;
+	bool bBroken = false;
 
 };
