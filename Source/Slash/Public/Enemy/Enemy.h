@@ -22,6 +22,8 @@ public:
 	UPROPERTY(EditAnywhere, Category = Montages)
 	UAnimMontage* HitReactMontage;
 
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser);
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -31,5 +33,10 @@ private:
 	USoundBase* HitSound;
 	UPROPERTY(EditAnywhere, Category = VisualEffects)
 	UParticleSystem* HitParticle;
+
+	UPROPERTY(VisibleAnywhere)
+	class UAttributeComponent* Attributes;
+	UPROPERTY(VisibleAnywhere)
+	class UHealthBarComponent* HealthBarWidget;
 
 };
