@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Interfaces/HitInterface.h"
+#include "Characters/CharacterTypes.h"
 #include "Enemy.generated.h"
 
 UCLASS()
@@ -21,11 +22,18 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = Montages)
 	UAnimMontage* HitReactMontage;
+	UPROPERTY(EditAnywhere, Category = Montages)
+	UAnimMontage* DeathMontage;
 
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser);
 
 protected:
 	virtual void BeginPlay() override;
+
+	void Die();
+	
+	UPROPERTY(BlueprintReadOnly)
+	EDeathPose DeathPose = EDeathPose::EDP_Alive;
 
 private:
 	void PlayHitReactMontage();
@@ -38,5 +46,10 @@ private:
 	class UAttributeComponent* Attributes;
 	UPROPERTY(VisibleAnywhere)
 	class UHealthBarComponent* HealthBarWidget;
+	
+	UPROPERTY()
+	AActor* CombatTarget;
+	UPROPERTY(EditAnywhere)
+	double CombatRadius = 500.f;
 
 };
