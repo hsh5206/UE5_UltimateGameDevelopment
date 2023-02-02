@@ -3,13 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
-#include "Interfaces/HitInterface.h"
+#include "Characters/BaseCharacter.h"
 #include "Characters/CharacterTypes.h"
 #include "Enemy.generated.h"
 
 UCLASS()
-class SLASH_API AEnemy : public ACharacter, public IHitInterface
+class SLASH_API AEnemy : public ABaseCharacter
 {
 	GENERATED_BODY()
 
@@ -22,17 +21,13 @@ public:
 
 	virtual void GetHit_Implementation(const FVector& ImpactPoint) override;
 
-	UPROPERTY(EditAnywhere, Category = Montages)
-	UAnimMontage* HitReactMontage;
-	UPROPERTY(EditAnywhere, Category = Montages)
-	UAnimMontage* DeathMontage;
-
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser);
+	virtual void Destroyed() override;
 
 protected:
 	virtual void BeginPlay() override;
 
-	void Die();
+	virtual void Die() override;
 	bool InTargetRange(AActor* Target, double Radius);
 	void MoveToTarget(AActor* Target);
 	AActor* ChoosePatrolTarget();
@@ -44,14 +39,9 @@ protected:
 	EDeathPose DeathPose = EDeathPose::EDP_Alive;
 
 private:
-	void PlayHitReactMontage();
-	UPROPERTY(EditAnywhere, Category = Sounds)
-	USoundBase* HitSound;
-	UPROPERTY(EditAnywhere, Category = VisualEffects)
-	UParticleSystem* HitParticle;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class AWeapon> WeaponClass;
 
-	UPROPERTY(VisibleAnywhere)
-	class UAttributeComponent* Attributes;
 	UPROPERTY(VisibleAnywhere)
 	class UHealthBarComponent* HealthBarWidget;
 	
